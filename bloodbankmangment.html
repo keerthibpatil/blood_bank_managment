@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Bank Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #c82333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #c82333;
+    }
+
+    label {
+      display: block;
+      margin: 8px 0 5px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #c82333;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background: #a71d2a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #c82333;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Blood Bank Management System
+  </header>
+
+  <div class="container">
+    <h2>Add Donor</h2>
+    <form id="donorForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" required>
+
+      <label for="bloodGroup">Blood Group:</label>
+      <select id="bloodGroup" required>
+        <option value="">Select</option>
+        <option>A+</option>
+        <option>A-</option>
+        <option>B+</option>
+        <option>B-</option>
+        <option>AB+</option>
+        <option>AB-</option>
+        <option>O+</option>
+        <option>O-</option>
+      </select>
+
+      <label for="contact">Contact:</label>
+      <input type="text" id="contact" required>
+
+      <button type="submit">Add Donor</button>
+    </form>
+
+    <h2>Search Donor</h2>
+    <label for="searchBloodGroup">Blood Group:</label>
+    <select id="searchBloodGroup">
+      <option value="">Select</option>
+      <option>A+</option>
+      <option>A-</option>
+      <option>B+</option>
+      <option>B-</option>
+      <option>AB+</option>
+      <option>AB-</option>
+      <option>O+</option>
+      <option>O-</option>
+    </select>
+    <button onclick="searchDonor()">Search</button>
+
+    <h2>Donor List</h2>
+    <table id="donorTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Blood Group</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    let donors = JSON.parse(localStorage.getItem("donors")) || [];
+
+    function renderTable(list) {
+      const tbody = document.querySelector("#donorTable tbody");
+      tbody.innerHTML = "";
+      list.forEach(donor => {
+        let row = `<tr>
+          <td>${donor.name}</td>
+          <td>${donor.bloodGroup}</td>
+          <td>${donor.contact}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    document.getElementById("donorForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let name = document.getElementById("name").value;
+      let bloodGroup = document.getElementById("bloodGroup").value;
+
+      donors.push({ name, bloodGroup, contact });
+      localStorage.setItem("donors", JSON.stringify(donors));
+
+      renderTable(donors);
+      this.reset();
+    });
+
+    function searchDonor() {
+      let bg = document.getElementById("searchBloodGroup").value;
+      if (bg === "") {
+        renderTable(donors);
+      } else {
+        let filtered = donors.filter(d => d.bloodGroup === bg);
+        renderTable(filtered);
+      }
+    }
+
+    // Initial render
+    renderTable(donors);
+  </script>
+</body>
+</html>
